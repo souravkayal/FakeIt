@@ -8,6 +8,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
     [ApiController]
     public class CreateAPIController : ControllerBase
     {
+
         private readonly ICreateAPIServiceInterface _createAPIServiceInterface;
         private readonly IMapper _mapper;
 
