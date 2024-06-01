@@ -1,7 +1,5 @@
-﻿using FakeIt.Common.APIModel.CreateAPI;
-using FakeIt.Common.DTOs.CreateAPI;
+﻿using AutoMapper;
 using FakeIt.Service.CreateAPI;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FakeIt.Web.Controllers.CreateAPI
@@ -11,31 +9,30 @@ namespace FakeIt.Web.Controllers.CreateAPI
     public class CreateAPIController : ControllerBase
     {
         private readonly ICreateAPIServiceInterface _createAPIServiceInterface;
+        private readonly IMapper _mapper;
 
-        public CreateAPIController(ICreateAPIServiceInterface _createAPIServiceInterface) 
+        public CreateAPIController(ICreateAPIServiceInterface createAPIServiceInterface 
+            , IMapper mapper) 
         {
-            this._createAPIServiceInterface = _createAPIServiceInterface;
+            _createAPIServiceInterface = createAPIServiceInterface;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// API to create static response
+        /// </summary>
+        /// <param name="createAPIRequest">Request payload</param>
+        /// <returns>API create response</returns>
         [HttpPost("static-api-mapping")]
-        public async Task<ActionResult<CreateStaticAPIResponse>> CreateStaticAPIMapping([FromBody] CreateStaticAPIRequest createAPIRequest)
+        public async Task<ActionResult<Common.APIModel.CreateAPI.CreateAPIResponse>> CreateStaticAPIMapping([FromBody] Common.APIModel.CreateAPI.CreateAPIRequest createAPIRequest)
         {
-
-            var request = new CreateStaticRequest 
-            { 
-                URL = createAPIRequest.URL , 
-                Response = createAPIRequest.Response 
-            };
+            var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
             
-            var result = await _createAPIServiceInterface.CreateStaticMapping(request);
+            var result = await _createAPIServiceInterface.CreateStaticMapping(requestDto);
 
-            var response = new CreateStaticAPIResponse
-            {
-               Guid = result.Guid
-            };
+            var responseResult =  _mapper.Map<Common.APIModel.CreateAPI.CreateAPIResponse>(result);
 
-            return Ok(response);
+            return Ok(responseResult);
         }
-
     }
 }

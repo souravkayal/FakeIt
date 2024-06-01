@@ -10,6 +10,6 @@ namespace FakeIt.Service.CreateAPI
 {
     public interface ICreateAPIServiceInterface
     {
-        Task<CreateStaticResponse> CreateStaticMapping(CreateStaticRequest request);
+        Task<Common.DTOs.CreateAPI.CreateAPIResponse> CreateStaticMapping(Common.DTOs.CreateAPI.CreateAPIRequest request);
     }
 }

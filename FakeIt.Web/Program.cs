@@ -1,5 +1,9 @@
+using FakeIt.Repository.CosmosConnector;
 using FakeIt.Repository.CreateAPI;
 using FakeIt.Service.CreateAPI;
+using FakeIt.Web;
+using FakeIt.Web.Filters;
+using Microsoft.Azure.Cosmos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +13,34 @@ builder.Services.AddTransient<ICreateAPIRepositoryInterface, CreateAPIRepository
 
 
 // Application settings
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => {
+    options.Filters.Add<CustomValidationFilter>();
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+var configuration = builder.Configuration;
+
+//We really don't need to create cosmos client for each need
+builder.Services.AddSingleton<CosmosClient>(sp =>
+{
+    var connectionString = configuration["CosmosDb:ConnectionString"];
+    return new CosmosClient(connectionString);
+});
+
+//Inject cosmos Connect
+builder.Services.AddTransient<CosmosConnect>(sp =>
+{
+    var cosmosClient = sp.GetRequiredService<CosmosClient>();
+    var databaseId = configuration["CosmosDb:DatabaseId"];
+
+    if (databaseId == null)
+        throw new Exception("Error in cosmos db setup. Database name missing in config");
+
+    return new CosmosConnect(cosmosClient, databaseId);
+});
 
 
 var app = builder.Build();
