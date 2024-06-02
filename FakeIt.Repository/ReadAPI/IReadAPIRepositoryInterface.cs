@@ -1,7 +1,9 @@
-﻿namespace FakeIt.Repository.ReadAPI
+﻿using FakeIt.Common.Entity.ReadAPI;
+
+namespace FakeIt.Repository.ReadAPI
 {
     public interface IReadAPIRepositoryInterface
     {
-        //Task<> CreateStaticMapping(request);
+        Task<ReadAPIResponse> ReturnAPIResponse(ReadAPIRequest request);
     }
 }

@@ -26,13 +26,35 @@ namespace FakeIt.Web.Controllers.CreateAPI
         [HttpPost("static-api-mapping")]
         public async Task<ActionResult<Common.APIModel.CreateAPI.CreateAPIResponse>> CreateStaticAPIMapping([FromBody] Common.APIModel.CreateAPI.CreateAPIRequest createAPIRequest)
         {
-            var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
+            if (createAPIRequest == null)
+            {
+                return BadRequest("Request cannot be null.");
+            }
+
+            try
+            {
+                var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
+
+                var result = await _createAPIServiceInterface.CreateStaticMapping(requestDto);
+
+                if (result == null)
+                {
+                    return StatusCode(500, "Internal server error");
+                }
+
+                var responseResult = _mapper.Map<Common.APIModel.CreateAPI.CreateAPIResponse>(result);
+
+                return Ok(responseResult);
+            }
+            catch (AutoMapperMappingException ex)
+            {
+                return StatusCode(500, $"Mapping error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
             
-            var result = await _createAPIServiceInterface.CreateStaticMapping(requestDto);
-
-            var responseResult =  _mapper.Map<Common.APIModel.CreateAPI.CreateAPIResponse>(result);
-
-            return Ok(responseResult);
         }
     }
 }

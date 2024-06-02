@@ -20,19 +20,35 @@ namespace FakeIt.Repository.CreateAPI
             {
                 await _container.CreateItemAsync(request);
 
-                return new CreateAPIResponse { StatusCode = 200 , Message = $"Mock API successfully created for url - {request.URL}" };
+                return new CreateAPIResponse 
+                { 
+                    StatusCode = 200 , 
+                    Message = $"Mock API successfully created for url - {request.URL}" 
+                };
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                return new CreateAPIResponse { StatusCode = 409, Message = "Url already exists in this project. Please use a different url." };
+                return new CreateAPIResponse 
+                { 
+                    StatusCode = 409, 
+                    Message = "Url already exists in this project. Please use a different url." 
+                };
             }
             catch (CosmosException ex)
             {
-                return new CreateAPIResponse { StatusCode = 500, Message = ex.Message };
+                return new CreateAPIResponse 
+                { 
+                    StatusCode = 500, 
+                    Message = ex.Message 
+                };
             }
             catch (Exception)
             {
-                return new CreateAPIResponse { Message = "Internal server error." };
+                return new CreateAPIResponse 
+                { 
+                    StatusCode = 500,
+                    Message = "Internal server error." 
+                };
             }
         }
     }

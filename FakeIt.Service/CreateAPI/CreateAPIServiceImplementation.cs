@@ -19,11 +19,24 @@ namespace FakeIt.Service.CreateAPI
 
         public async Task<CreateAPIResponse> CreateStaticMapping(CreateAPIRequest request)
         {
-            var requestEntity = _mapper.Map<FakeIt.Common.Entity.CreateAPI.CreateAPIRequest>(request);
+            try
+            {
+                var requestEntity = _mapper.Map<FakeIt.Common.Entity.CreateAPI.CreateAPIRequest>(request);
+
+                var result = await _createAPIRepositoryInterface.CreateStaticMapping(requestEntity);
+
+                return _mapper.Map<CreateAPIResponse>(result);
+            }
+            catch (AutoMapperMappingException ex)
+            {
+                throw new Exception("Mapping error occurred while creating static mapping.", ex);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             
-            var result = await _createAPIRepositoryInterface.CreateStaticMapping(requestEntity);
-            
-            return _mapper.Map<CreateAPIResponse>(result);
         }
     }
 }

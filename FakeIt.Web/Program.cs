@@ -1,6 +1,8 @@
 using FakeIt.Repository.CosmosConnector;
 using FakeIt.Repository.CreateAPI;
+using FakeIt.Repository.ReadAPI;
 using FakeIt.Service.CreateAPI;
+using FakeIt.Service.ReadAPI;
 using FakeIt.Web;
 using FakeIt.Web.Filters;
 using Microsoft.Azure.Cosmos;
@@ -11,9 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<ICreateAPIServiceInterface, CreateAPIServiceImplementation>();
 builder.Services.AddTransient<ICreateAPIRepositoryInterface, CreateAPIRepositoryImplementation>();
 
+builder.Services.AddTransient<IReadAPIServiceInterface, ReadAPIServiceImplementation>();
+builder.Services.AddTransient<IReadAPIRepositoryInterface, ReadAPIRepositoryImplementation>();
+
 
 // Application settings
-builder.Services.AddControllers(options => {
+builder.Services.AddControllers(options => 
+{
     options.Filters.Add<CustomValidationFilter>();
 });
 
@@ -41,7 +47,6 @@ builder.Services.AddTransient<CosmosConnect>(sp =>
 
     return new CosmosConnect(cosmosClient, databaseId);
 });
-
 
 var app = builder.Build();
 

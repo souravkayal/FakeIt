@@ -1,4 +1,4 @@
-﻿namespace FakeIt.Common.APIModel.ReadAPI
+﻿namespace FakeIt.Common.Entity.ReadAPI
 {
     public class ReadAPIRequest
     {

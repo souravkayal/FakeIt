@@ -18,6 +18,9 @@ namespace FakeIt.Common.Entity.CreateAPI
         [JsonProperty("url")]
         public string URL { get; set; } = string.Empty;
 
+        [JsonProperty("http_methode")]
+        public string HttpMethod { get; set; } = string.Empty;
+
         [JsonProperty("response")]
         public string? Response { get; set; }
     }
