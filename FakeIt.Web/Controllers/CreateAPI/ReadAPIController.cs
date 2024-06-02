@@ -23,24 +23,33 @@ namespace FakeIt.Web.Controllers.CreateAPI
         [HttpGet, HttpPost]
         public async Task<ReadAPIResponse> HandleAPIReadRequest()
         {
-            var endpoint = $"/{Request?.Path.Value?.TrimStart('/')}";
-
-            if (string.IsNullOrEmpty(endpoint))
+            try
             {
-                return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
+                var endpoint = $"/{Request?.Path.Value?.TrimStart('/')}";
+
+                if (string.IsNullOrEmpty(endpoint))
+                {
+                    return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
+                }
+
+                var readRequestDto = _mapper.Map<Common.DTOs.ReadAPI.ReadAPIRequest>(new ReadAPIRequest
+                {
+                    HttpMethod = Request?.Method,
+                    URL = endpoint
+                });
+
+                var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
+
+                return _mapper.Map<ReadAPIResponse>(result);
             }
-
-            var readRequestDto = _mapper.Map<Common.DTOs.ReadAPI.ReadAPIRequest>(new ReadAPIRequest
+            catch (AutoMapperMappingException ex)
             {
-                HttpMethod = Request?.Method,
-                URL = endpoint
-            });
-
-            var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
-
-            
-
-            return _mapper.Map<ReadAPIResponse>(result);
+                return new ReadAPIResponse { StatusCode = 500, Message = $"Mapping error: {ex.Message}" };
+            }
+            catch (Exception ex)
+            {
+                return new ReadAPIResponse { StatusCode = 500, Message = $"An unexpected error occurred: {ex.Message}" };
+            }
 
         }
 

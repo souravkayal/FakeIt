@@ -19,11 +19,23 @@ namespace FakeIt.Service.ReadAPI
 
         public async Task<ReadAPIResponse> ReturnAPIResponse(ReadAPIRequest request)
         {
-            var requestEnt = _mapper.Map<Common.Entity.ReadAPI.ReadAPIRequest>(request);
+            try
+            {
+                var requestEnt = _mapper.Map<Common.Entity.ReadAPI.ReadAPIRequest>(request);
 
-            var response = await _readAPIRepositoryInterface.ReturnAPIResponse(requestEnt);
+                var response = await _readAPIRepositoryInterface.ReturnAPIResponse(requestEnt);
 
-            return _mapper.Map<ReadAPIResponse>(response);
+                return _mapper.Map<ReadAPIResponse>(response);
+            }
+            catch (AutoMapperMappingException ex)
+            {
+                throw new Exception("Mapping error occurred while creating static mapping.", ex);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
     }
