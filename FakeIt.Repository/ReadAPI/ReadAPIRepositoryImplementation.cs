@@ -4,7 +4,6 @@ using FakeIt.Repository.CosmosConnector;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Text.Json;
 
 namespace FakeIt.Repository.ReadAPI
 {

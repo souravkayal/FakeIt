@@ -2,7 +2,6 @@
 using FakeIt.Common.APIModel.ReadAPI;
 using FakeIt.Service.ReadAPI;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace FakeIt.Web.Controllers.CreateAPI
 {
