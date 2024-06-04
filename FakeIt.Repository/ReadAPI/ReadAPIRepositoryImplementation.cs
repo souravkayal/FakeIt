@@ -42,6 +42,7 @@ namespace FakeIt.Repository.ReadAPI
             try
             {
                 var sqlQueryText = "SELECT c.response FROM c WHERE c.http_methode = @httpMethod AND c.url = @url";
+
                 var queryDefinition = new QueryDefinition(sqlQueryText)
                     .WithParameter("@httpMethod", request.HttpMethod)
                     .WithParameter("@url", request.URL);
