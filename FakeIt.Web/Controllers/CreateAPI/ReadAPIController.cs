@@ -2,6 +2,9 @@
 using FakeIt.Common.APIModel.ReadAPI;
 using FakeIt.Service.ReadAPI;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Reflection.Metadata;
+using System.Text.Json.Serialization;
 
 namespace FakeIt.Web.Controllers.CreateAPI
 {
@@ -20,11 +23,15 @@ namespace FakeIt.Web.Controllers.CreateAPI
         }
 
         [HttpGet, HttpPost]
-        public async Task<ReadAPIResponse> HandleAPIReadRequest()
+        public async Task<ReadAPIResponse> HandleAPIReadRequest([FromQuery] int count = 1)
         {
             try
             {
                 var endpoint = $"/{Request?.Path.Value?.TrimStart('/')}";
+
+                if (endpoint.StartsWith("/swagger"))
+                    return new ReadAPIResponse { StatusCode = 200 };
+
 
                 if (string.IsNullOrEmpty(endpoint))
                 {
@@ -34,12 +41,14 @@ namespace FakeIt.Web.Controllers.CreateAPI
                 var readRequestDto = _mapper.Map<Common.DTOs.ReadAPI.ReadAPIRequest>(new ReadAPIRequest
                 {
                     HttpMethod = Request?.Method,
-                    URL = endpoint
+                    URL = endpoint,
+                    Count = count
                 });
-
+                
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
-                return _mapper.Map<ReadAPIResponse>(result);
+                return new ReadAPIResponse { Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response))};
+
             }
             catch (AutoMapperMappingException ex)
             {

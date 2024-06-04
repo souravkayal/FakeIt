@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FakeIt.Common.Mapper;
+using Newtonsoft.Json.Linq;
 
 namespace FakeIt.Web
 {
@@ -28,6 +29,9 @@ namespace FakeIt.Web
             CreateMap< Common.Entity.ReadAPI.ReadAPIResponse , Common.DTOs.ReadAPI.ReadAPIResponse>();
             
             CreateMap<Common.DTOs.ReadAPI.ReadAPIResponse, Common.APIModel.ReadAPI.ReadAPIResponse>();
+
+
+            //CreateMap<List<JToken>, List<object>>().ConvertUsing(new JTokenToObjectListConverter());
         }
     }
 }
