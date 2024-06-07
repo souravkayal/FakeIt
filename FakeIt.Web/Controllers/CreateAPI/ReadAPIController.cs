@@ -3,13 +3,11 @@ using FakeIt.Common.APIModel.ReadAPI;
 using FakeIt.Service.ReadAPI;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Reflection.Metadata;
-using System.Text.Json.Serialization;
 
 namespace FakeIt.Web.Controllers.CreateAPI
 {
     [ApiController]
-    [Route("{*url}")]
+    [Route("/read/{*url}")]
     public class ReadAPIController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -21,18 +19,26 @@ namespace FakeIt.Web.Controllers.CreateAPI
             _mapper = mapper;
             _readAPIServiceInterface = readAPIServiceInterface;
         }
+        public static string GetPartAfterRead(string input)
+        {
+            string keyword = "/read";
+            int index = input.IndexOf(keyword);
+
+            if (index == -1)
+            {
+                return string.Empty; // or throw an exception if you prefer
+            }
+
+            return input.Substring(index + keyword.Length);
+        }
 
         [HttpGet, HttpPost]
-        public async Task<ReadAPIResponse> HandleAPIReadRequest([FromQuery] int count = 1)
+        public async Task<ReadAPIResponse> HandleAPIReadRequest([FromQuery] int count = -1)
         {
             try
             {
-                var endpoint = $"/{Request?.Path.Value?.TrimStart('/')}";
-
-                if (endpoint.StartsWith("/swagger"))
-                    return new ReadAPIResponse { StatusCode = 200 };
-
-
+                var endpoint = GetPartAfterRead($"/{Request?.Path.Value?.TrimStart('/')}");
+                
                 if (string.IsNullOrEmpty(endpoint))
                 {
                     return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
@@ -44,10 +50,13 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     URL = endpoint,
                     Count = count
                 });
-                
+
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
-                return new ReadAPIResponse { Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response))};
+                return new ReadAPIResponse 
+                { 
+                    Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response)) 
+                };
 
             }
             catch (AutoMapperMappingException ex)

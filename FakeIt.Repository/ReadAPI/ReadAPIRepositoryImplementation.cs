@@ -59,8 +59,7 @@ namespace FakeIt.Repository.ReadAPI
                         return new ReadAPIResponse
                         {
                             StatusCode = 200,
-                            Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>
-                                       (JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(document.response)))
+                            Response = document.response
                         };
                     }
                 }

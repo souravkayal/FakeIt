@@ -30,8 +30,6 @@ namespace FakeIt.Web
             
             CreateMap<Common.DTOs.ReadAPI.ReadAPIResponse, Common.APIModel.ReadAPI.ReadAPIResponse>();
 
-
-            //CreateMap<List<JToken>, List<object>>().ConvertUsing(new JTokenToObjectListConverter());
         }
     }
 }
