@@ -148,9 +148,24 @@ namespace FakeIt.Service.ReadAPI
 
                 var response = await _readAPIRepositoryInterface.ReturnAPIResponse(requestEnt);
 
+                //If the request is to return the original response
+                if(request.Count == -1) 
+                {
+                    List<JToken> jTokens = JsonConvert.DeserializeObject<List<JToken>>(response.Response.ToString());
+
+                    return new ReadAPIResponse 
+                    {
+                        Response = jTokens.Select(jToken => jToken.ToObject<dynamic>()).ToList() 
+                    };
+                }
+
+                //Make fake response for requested number of times
                 List<JToken> multipleObjectResponse = GenerateFakeObjects(response.Response.ToString(), request.Count);
 
-                return new ReadAPIResponse {  Response = multipleObjectResponse};
+                return new ReadAPIResponse 
+                {  
+                    Response = multipleObjectResponse.Select(jToken => jToken.ToObject<dynamic>()).ToList() 
+                };
 
             }
             catch (AutoMapperMappingException ex)
