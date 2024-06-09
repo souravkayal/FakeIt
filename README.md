@@ -3,7 +3,7 @@
 
 FakeIt. A simple application to host your fake API simulate HTTP response. The application is build to keep the usecase simple but efficient. 
 
-Teach Stack :
-ASP.NET Core 8 to run the Backend services.
-CosmosDB is to store the API setup. It's easy and flexible to setup batabase and container. Just look at the setup guideline.
+<b> Teach Stack : </b> </br> </br>
+ASP.NET Core 8 to run the backend service. </br> </br>
+CosmosDB is to store the API setup.
 
