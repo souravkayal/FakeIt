@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FakeIt.Common.Common;
 using FakeIt.Service.CreateAPI;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,9 +38,14 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 var result = await _createAPIServiceInterface.CreateStaticMapping(requestDto);
 
+                if(result.StatusCode != 200)
+                {
+                    return StatusCode(result.StatusCode , result.Message);
+                }
+
                 if (result == null)
                 {
-                    return StatusCode(500, "Internal server error");
+                    return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);
                 }
 
                 var responseResult = _mapper.Map<Common.APIModel.CreateAPI.CreateAPIResponse>(result);
@@ -52,7 +58,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error");
+                return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);
             }
             
         }

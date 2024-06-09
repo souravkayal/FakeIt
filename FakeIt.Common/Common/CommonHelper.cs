@@ -12,7 +12,19 @@
                 return string.Empty;
             }
 
-            return input.Substring(index + keyword.Length);
+            var result = input.Substring(index + keyword.Length);
+
+            return RemoveFirstSlash(Uri.UnescapeDataString(result));
+        }
+
+        public static string RemoveFirstSlash(string url)
+        {
+            int index = url.IndexOf('/');
+            if (index != -1)
+            {
+                return url.Substring(0, index) + url.Substring(index + 1);
+            }
+            return url; // Return the original url if there's no slash
         }
     }
 }
