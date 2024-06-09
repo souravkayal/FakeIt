@@ -14,7 +14,9 @@
 
             var result = input.Substring(index + keyword.Length);
 
-            return RemoveFirstSlash(Uri.UnescapeDataString(result));
+            return Uri.UnescapeDataString(result);
+
+            //return RemoveFirstSlash(Uri.UnescapeDataString(result));
         }
 
         public static string RemoveFirstSlash(string url)
