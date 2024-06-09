@@ -32,3 +32,4 @@ CosmosDB is to store the API setup.
 
 3. Browser www.yourhost.com/swagger and have fun !   
    
+![FakeIteasy_swagar](https://github.com/souravkayal/FakeIt/assets/6651731/ab8b30d3-386c-46be-bccf-1e883125b3e0)
