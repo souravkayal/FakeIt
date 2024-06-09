@@ -47,7 +47,7 @@ namespace FakeIt.Repository.CreateAPI
                 return new CreateAPIResponse 
                 { 
                     StatusCode = 500,
-                    Message = "Internal server error." 
+                    Message = CommonConstants.INTERNAL_SERVER_ERROR
                 };
             }
         }

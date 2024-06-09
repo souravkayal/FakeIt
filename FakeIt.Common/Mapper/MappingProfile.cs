@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FakeIt.Common.Mapper;
-using Newtonsoft.Json.Linq;
 
 namespace FakeIt.Web
 {

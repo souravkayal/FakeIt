@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FakeIt.Common.APIModel.ReadAPI;
+using FakeIt.Common.Common;
 using FakeIt.Service.ReadAPI;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -19,25 +20,13 @@ namespace FakeIt.Web.Controllers.CreateAPI
             _mapper = mapper;
             _readAPIServiceInterface = readAPIServiceInterface;
         }
-        public static string GetPartAfterRead(string input)
-        {
-            string keyword = "/read";
-            int index = input.IndexOf(keyword);
-
-            if (index == -1)
-            {
-                return string.Empty; // or throw an exception if you prefer
-            }
-
-            return input.Substring(index + keyword.Length);
-        }
 
         [HttpGet, HttpPost]
         public async Task<ReadAPIResponse> HandleAPIReadRequest([FromQuery] int count = -1)
         {
             try
             {
-                var endpoint = GetPartAfterRead($"/{Request?.Path.Value?.TrimStart('/')}");
+                var endpoint = CommonHelper.GetPartAfterRead($"/{Request?.Path.Value?.TrimStart('/')}");
                 
                 if (string.IsNullOrEmpty(endpoint))
                 {
@@ -65,7 +54,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
             }
             catch (Exception ex)
             {
-                return new ReadAPIResponse { StatusCode = 500, Message = $"An unexpected error occurred: {ex.Message}" };
+                return new ReadAPIResponse { StatusCode = 500, Message = CommonConstants.INTERNAL_SERVER_ERROR };
             }
 
         }

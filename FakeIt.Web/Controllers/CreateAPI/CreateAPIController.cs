@@ -52,7 +52,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                return StatusCode(500, $"Internal server error");
             }
             
         }

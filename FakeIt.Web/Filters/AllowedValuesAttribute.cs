@@ -15,7 +15,7 @@ namespace FakeIt.Web.Filters
         {
             if (value == null)
             {
-                return ValidationResult.Success; // You can change this if null is not allowed.
+                return ValidationResult.Success; 
             }
 
             if (_allowedValues.Contains(value.ToString(), StringComparer.OrdinalIgnoreCase))
