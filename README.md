@@ -8,7 +8,7 @@ ASP.NET Core 8 to run the backend service. </br> </br>
 CosmosDB is to store the API setup.
 </br></br>
 
-<h3> Setup guideline </h3> 
+<h3> Setup guideline : </h3> 
 
 1. Host the application whereever you want ;) . Preferably in azure ! best choice is App Service. Sinple.
 2. Configure CosmosDB NoSQL container.
