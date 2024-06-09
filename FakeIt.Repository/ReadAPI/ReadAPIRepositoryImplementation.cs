@@ -16,27 +16,6 @@ namespace FakeIt.Repository.ReadAPI
             _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER, CosmosConstant.API_MASTER_PARTITION_KEY);
         }
 
-        private static string CleanJsonString(string jsonString)
-        {
-            // Check if the input is a JSON string with extra backslashes
-            if (!string.IsNullOrEmpty(jsonString) && jsonString.StartsWith("\"") && jsonString.EndsWith("\""))
-            {
-                // Remove the surrounding double quotes
-                jsonString = jsonString.Substring(1, jsonString.Length - 2);
-
-                // Unescape the JSON string
-                jsonString = jsonString.Replace("\\\"", "\"");
-
-                // Parse the JSON string to ensure it is properly formatted
-                var jToken = JToken.Parse(jsonString);
-
-                // Convert back to JSON string without unnecessary backslashes
-                return jToken.ToString(Formatting.None);
-            }
-
-            return jsonString;
-        }
-
         public async Task<ReadAPIResponse> ReturnAPIResponse(ReadAPIRequest request)
         {
             try
@@ -83,7 +62,7 @@ namespace FakeIt.Repository.ReadAPI
                 return new ReadAPIResponse
                 {
                     StatusCode = 500,
-                    Message = "Internal server error."
+                    Message = CommonConstants.INTERNAL_SERVER_ERROR
                 };
             }
         }

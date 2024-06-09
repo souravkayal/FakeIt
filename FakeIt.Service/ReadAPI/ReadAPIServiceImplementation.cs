@@ -20,9 +20,9 @@ namespace FakeIt.Service.ReadAPI
             _mapper = mapper;
         }
 
-        #region Private methods
+        #region Private methods to generate fake data
 
-        public static List<JToken> GenerateFakeObjects(string sampleJson, int count)
+        private static List<JToken> GenerateFakeObjects(string sampleJson, int count)
         {
             // Deserialize the sample JSON to get the structure
             JArray sampleArray = JArray.Parse(sampleJson);
@@ -36,6 +36,7 @@ namespace FakeIt.Service.ReadAPI
             JObject sampleObject = (JObject)sampleArray[0];
 
             List<JToken> fakeObjects = new List<JToken>();
+
             for (int i = 0; i < count; i++)
             {
                 JObject fakeObject = GenerateFakeObject(sampleObject);
@@ -45,7 +46,7 @@ namespace FakeIt.Service.ReadAPI
             return fakeObjects;
         }
 
-        public static JObject GenerateFakeObject(JObject sampleObject)
+        private static JObject GenerateFakeObject(JObject sampleObject)
         {
             var faker = new Faker();
             JObject fakeObject = new JObject();
@@ -92,7 +93,7 @@ namespace FakeIt.Service.ReadAPI
             return fakeObject;
         }
 
-        public static JArray GenerateFakeArray(JArray sampleArray)
+        private static JArray GenerateFakeArray(JArray sampleArray)
         {
             var faker = new Faker();
             JArray fakeArray = new JArray();
