@@ -33,6 +33,11 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
                 }
 
+                if (count < -1 || count == 0 || count > 100)
+                {
+                    return new ReadAPIResponse { StatusCode = 400, Message = "Invalid count. Count must be in range of 1 to 100. Ignore count to retuen the origianl document" };
+                }
+
                 var readRequestDto = _mapper.Map<Common.DTOs.ReadAPI.ReadAPIRequest>(new ReadAPIRequest
                 {
                     HttpMethod = Request?.Method,
@@ -42,11 +47,15 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
-                return new ReadAPIResponse 
-                { 
-                    Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response)) 
-                };
+                if(result.StatusCode == 200) 
+                {
+                    return new ReadAPIResponse
+                    {
+                        Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response))
+                    };
+                }
 
+                return new ReadAPIResponse { StatusCode = result.StatusCode, Message = result.Message };
             }
             catch (AutoMapperMappingException ex)
             {

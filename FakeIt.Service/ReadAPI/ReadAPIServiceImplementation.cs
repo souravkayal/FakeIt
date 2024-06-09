@@ -24,12 +24,15 @@ namespace FakeIt.Service.ReadAPI
 
         private static List<JToken> GenerateFakeObjects(string sampleJson, int count)
         {
-            // Deserialize the sample JSON to get the structure
-            JArray sampleArray = JArray.Parse(sampleJson);
+            JToken sampleToken = JToken.Parse(sampleJson);
+
+            // Check if sampleJson is an array, if not, convert it to an array
+            JArray sampleArray = sampleToken.Type == JTokenType.Array ? (JArray)sampleToken : new JArray(sampleToken);
+
 
             if (sampleArray.Count == 0)
             {
-                throw new ArgumentException("Sample JSON array must contain at least one object.");
+                sampleArray = new JArray(sampleJson);
             }
 
             // Use the first object as a template
@@ -149,24 +152,48 @@ namespace FakeIt.Service.ReadAPI
 
                 var response = await _readAPIRepositoryInterface.ReturnAPIResponse(requestEnt);
 
-                //If the request is to return the original response
-                if(request.Count == -1) 
+                if(response != null && response.StatusCode == 200)
                 {
-                    List<JToken> jTokens = JsonConvert.DeserializeObject<List<JToken>>(response.Response.ToString());
-
-                    return new ReadAPIResponse 
+                    //If the request is to return the original response
+                    if (request.Count == -1)
                     {
-                        Response = jTokens.Select(jToken => jToken.ToObject<dynamic>()).ToList() 
-                    };
+                        JToken token = JToken.Parse(response.Response.ToString());
+
+                        if(token.Type == JTokenType.Array) 
+                        {
+                            List<JToken> jTokens = JsonConvert.DeserializeObject<List<JToken>>(response.Response.ToString());
+
+                            return new ReadAPIResponse
+                            {
+                                Response = jTokens.Select(jToken => jToken.ToObject<dynamic>()).ToList()
+                            };
+
+                        }
+                        else
+                        {
+                            JToken jTokens = JsonConvert.DeserializeObject<JToken>(response.Response.ToString());
+
+                            return new ReadAPIResponse
+                            {
+                                Response = jTokens.ToObject<dynamic>()
+                            };
+                        }
+                        
+                    }
+                    else
+                    {
+                        //Make fake response for requested number of times
+                        List<JToken> multipleObjectResponse = GenerateFakeObjects(response.Response.ToString(), request.Count);
+
+                        return new ReadAPIResponse
+                        {
+                            Response = multipleObjectResponse.Select(jToken => jToken.ToObject<dynamic>()).ToList()
+                        };
+                    }
+                   
                 }
 
-                //Make fake response for requested number of times
-                List<JToken> multipleObjectResponse = GenerateFakeObjects(response.Response.ToString(), request.Count);
-
-                return new ReadAPIResponse 
-                {  
-                    Response = multipleObjectResponse.Select(jToken => jToken.ToObject<dynamic>()).ToList() 
-                };
+                return new ReadAPIResponse { StatusCode = response.StatusCode ,Message = response.Message };
 
             }
             catch (AutoMapperMappingException ex)
