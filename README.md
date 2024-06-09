@@ -1,5 +1,5 @@
 
-![FakeIt_logo](https://github.com/souravkayal/FakeIt/assets/6651731/14c1ce8d-1c6e-457d-848c-575754293e37)
+![FakeIt_logo](https://github.com/souravkayal/FakeIt/assets/6651731/14c1ce8d-1c6e-457d-848c-575754293e37) 
 
 FakeIt. A simple application to host your fake API simulate HTTP response. The application is build to keep the usecase simple but efficient. 
 
