@@ -29,7 +29,6 @@ namespace FakeIt.Service.ReadAPI
             // Check if sampleJson is an array, if not, convert it to an array
             JArray sampleArray = sampleToken.Type == JTokenType.Array ? (JArray)sampleToken : new JArray(sampleToken);
 
-
             if (sampleArray.Count == 0)
             {
                 sampleArray = new JArray(sampleJson);
@@ -152,7 +151,8 @@ namespace FakeIt.Service.ReadAPI
 
                 var response = await _readAPIRepositoryInterface.ReturnAPIResponse(requestEnt);
 
-                if(response != null && response.StatusCode == 200)
+                // Checking 404 is not possible, user may set 404 as response ;)
+                if(response != null && (response.StatusCode != 404 && response.Message != "NoResultFound"))
                 {
                     //If the request is to return the original response
                     if (request.Count == -1)
@@ -165,6 +165,7 @@ namespace FakeIt.Service.ReadAPI
 
                             return new ReadAPIResponse
                             {
+                                StatusCode = response.StatusCode,
                                 Response = jTokens.Select(jToken => jToken.ToObject<dynamic>()).ToList()
                             };
 
@@ -175,10 +176,10 @@ namespace FakeIt.Service.ReadAPI
 
                             return new ReadAPIResponse
                             {
+                                StatusCode = response.StatusCode,
                                 Response = jTokens.ToObject<dynamic>()
                             };
                         }
-                        
                     }
                     else
                     {
@@ -186,23 +187,20 @@ namespace FakeIt.Service.ReadAPI
                         List<JToken> multipleObjectResponse = GenerateFakeObjects(response.Response.ToString(), request.Count);
 
                         return new ReadAPIResponse
-                        {
+                        {   
+                            StatusCode = response.StatusCode,
                             Response = multipleObjectResponse.Select(jToken => jToken.ToObject<dynamic>()).ToList()
                         };
                     }
                    
                 }
 
-                return new ReadAPIResponse { StatusCode = response.StatusCode ,Message = response.Message };
+                return new ReadAPIResponse { StatusCode = response.StatusCode , Message = response.Message };
 
             }
             catch (AutoMapperMappingException ex)
             {
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
-            }
-            catch (Exception)
-            {
-                throw;
             }
             
         }

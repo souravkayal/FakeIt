@@ -22,7 +22,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
         }
 
         [HttpGet, HttpPost]
-        public async Task<ReadAPIResponse> HandleAPIReadRequest([FromQuery] int count = -1)
+        public async Task<dynamic> HandleAPIReadRequest([FromQuery] int count = -1)
         {
             try
             {
@@ -47,12 +47,10 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
-                if(result.StatusCode == 200) 
+                if(result.StatusCode != 404 && result.Message != "NoResultFound") 
                 {
-                    return new ReadAPIResponse
-                    {
-                        Response = System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response))
-                    };
+                    return StatusCode(result.StatusCode, 
+                        System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response)));
                 }
 
                 return new ReadAPIResponse { StatusCode = result.StatusCode, Message = result.Message };
