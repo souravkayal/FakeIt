@@ -20,7 +20,7 @@ namespace FakeIt.Repository.ReadAPI
         {
             try
             {
-                var sqlQueryText = "SELECT c.response FROM c WHERE c.http_methode = @httpMethod AND c.url = @url";
+                var sqlQueryText = "SELECT c.status_code, c.response FROM c WHERE c.http_methode = @httpMethod AND c.url = @url";
 
                 var queryDefinition = new QueryDefinition(sqlQueryText)
                     .WithParameter("@httpMethod", request.HttpMethod)
@@ -37,7 +37,7 @@ namespace FakeIt.Repository.ReadAPI
                     {
                         return new ReadAPIResponse
                         {
-                            StatusCode = 200,
+                            StatusCode = document.status_code,
                             Response = document.response
                         };
                     }
@@ -46,7 +46,7 @@ namespace FakeIt.Repository.ReadAPI
                 return new ReadAPIResponse
                 {
                     StatusCode = 404,
-                    Message = "No result found. Pls check the request URL."
+                    Message = "NoResultFound"
                 };
             }
             catch (CosmosException ex)

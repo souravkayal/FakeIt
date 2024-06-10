@@ -5,5 +5,6 @@
         public string URL { get; set; } = string.Empty;
         public string HttpMethod { get; set; } = string.Empty;
         public int Count {  get; set; }
+        public int StatusCode { get; set; }
     }
 }

@@ -21,5 +21,8 @@ namespace FakeIt.Common.APIModel.CreateAPI
         [Required(ErrorMessage = "Response is required.")]
         public dynamic Response { get; set; }
 
+        [Required]
+        public int StatusCode { get; set; }
+
     }
 }

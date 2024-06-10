@@ -23,5 +23,8 @@ namespace FakeIt.Common.Entity.CreateAPI
 
         [JsonProperty("response")]
         public string? Response { get; set; }
+
+        [JsonProperty("status_code")]
+        public int StatusCode { get; set; }
     }
 }
