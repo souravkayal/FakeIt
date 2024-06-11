@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FakeIt.Web.Controllers.CreateAPI
 {
-    [Route("api/create")]
+    [Route("api/")]
     [ApiController]
     public class CreateAPIController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
         /// </summary>
         /// <param name="createAPIRequest">Request payload</param>
         /// <returns>API create response</returns>
-        [HttpPost("static-api-mapping")]
+        [HttpPost("create")]
         public async Task<ActionResult<Common.APIModel.CreateAPI.CreateAPIResponse>> CreateStaticAPIMapping([FromBody] Common.APIModel.CreateAPI.CreateAPIRequest createAPIRequest)
         {
             if (createAPIRequest == null)
