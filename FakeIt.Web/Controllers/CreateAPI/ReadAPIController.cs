@@ -21,8 +21,9 @@ namespace FakeIt.Web.Controllers.CreateAPI
             _readAPIServiceInterface = readAPIServiceInterface;
         }
 
-        [HttpGet, HttpPost]
-        public async Task<dynamic> HandleAPIReadRequest([FromQuery] int count = -1)
+
+        [AcceptVerbs("GET", "POST", "PUT", "DELETE", "PATCH")]
+        public async Task<dynamic> Read([FromQuery] int count = -1)
         {
             try
             {
@@ -33,6 +34,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
                 }
 
+                // Let's allow only 100 mock results ;)
                 if (count < -1 || count == 0 || count > 100)
                 {
                     return new ReadAPIResponse { StatusCode = 400, Message = "Invalid count. Count must be in range of 1 to 100. Ignore count to retuen the origianl document" };
@@ -53,7 +55,11 @@ namespace FakeIt.Web.Controllers.CreateAPI
                         System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response)));
                 }
 
-                return new ReadAPIResponse { StatusCode = result.StatusCode, Message = result.Message };
+                return new ReadAPIResponse 
+                {   
+                    StatusCode = result.StatusCode, 
+                    Message = result.StatusCode == 404 ? "No Result Found." : result.Message 
+                };
             }
             catch (AutoMapperMappingException ex)
             {
