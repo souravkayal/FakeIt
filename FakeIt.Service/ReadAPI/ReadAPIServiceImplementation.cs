@@ -4,6 +4,8 @@ using FakeIt.Common.DTOs.ReadAPI;
 using FakeIt.Repository.ReadAPI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace FakeIt.Service.ReadAPI
 {
@@ -24,33 +26,45 @@ namespace FakeIt.Service.ReadAPI
 
         private static List<JToken> GenerateFakeObjects(string sampleJson, int count)
         {
-            JToken sampleToken = JToken.Parse(sampleJson);
+            // Use streaming parsing to reduce memory usage when parsing large JSON
+            using var stringReader = new StringReader(sampleJson);
+            using var jsonReader = new JsonTextReader(stringReader) { SupportMultipleContent = true };
 
-            // Check if sampleJson is an array, if not, convert it to an array
+            JToken sampleToken;
+            if (!jsonReader.Read())
+            {
+                throw new ArgumentException("Invalid JSON provided.");
+            }
+
+            sampleToken = JToken.Load(jsonReader);
+
+            // Ensure sampleJson is an array
             JArray sampleArray = sampleToken.Type == JTokenType.Array ? (JArray)sampleToken : new JArray(sampleToken);
 
             if (sampleArray.Count == 0)
             {
-                sampleArray = new JArray(sampleJson);
+                throw new ArgumentException("Sample JSON must contain at least one object.");
             }
 
             // Use the first object as a template
             JObject sampleObject = (JObject)sampleArray[0];
 
-            List<JToken> fakeObjects = new List<JToken>();
+            var fakeObjectsBag = new ConcurrentBag<JToken>();
 
-            for (int i = 0; i < count; i++)
+            var faker = new Faker();
+
+            Parallel.For(0, count, i =>
             {
-                JObject fakeObject = GenerateFakeObject(sampleObject);
-                fakeObjects.Add(fakeObject);
-            }
+                JObject fakeObject = GenerateFakeObject(sampleObject, faker);
+                fakeObjectsBag.Add(fakeObject);
+            });
 
-            return fakeObjects;
+            return fakeObjectsBag.ToList();
+            
         }
 
-        private static JObject GenerateFakeObject(JObject sampleObject)
+        private static JObject GenerateFakeObject(JObject sampleObject, Faker faker)
         {
-            var faker = new Faker();
             JObject fakeObject = new JObject();
 
             foreach (var property in sampleObject.Properties())
@@ -79,10 +93,10 @@ namespace FakeIt.Service.ReadAPI
                         fakeValue = new JValue(faker.Random.Guid());
                         break;
                     case JTokenType.Object:
-                        fakeValue = GenerateFakeObject((JObject)value);
+                        fakeValue = GenerateFakeObject((JObject)value, faker);
                         break;
                     case JTokenType.Array:
-                        fakeValue = GenerateFakeArray((JArray)value);
+                        fakeValue = GenerateFakeArray((JArray)value, faker);
                         break;
                     default:
                         fakeValue = new JValue(faker.Lorem.Word());
@@ -95,9 +109,8 @@ namespace FakeIt.Service.ReadAPI
             return fakeObject;
         }
 
-        private static JArray GenerateFakeArray(JArray sampleArray)
+        private static JArray GenerateFakeArray(JArray sampleArray, Faker faker)
         {
-            var faker = new Faker();
             JArray fakeArray = new JArray();
 
             if (sampleArray.Count > 0)
@@ -110,7 +123,7 @@ namespace FakeIt.Service.ReadAPI
                     switch (sampleElement.Type)
                     {
                         case JTokenType.Object:
-                            fakeElement = GenerateFakeObject((JObject)sampleElement);
+                            fakeElement = GenerateFakeObject((JObject)sampleElement, faker);
                             break;
                         case JTokenType.Integer:
                             fakeElement = new JValue(faker.Random.Int(1, 1000));
@@ -140,6 +153,7 @@ namespace FakeIt.Service.ReadAPI
 
             return fakeArray;
         }
+
 
         #endregion
 
