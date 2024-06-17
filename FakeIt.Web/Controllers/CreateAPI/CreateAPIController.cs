@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FakeIt.Web.Controllers.CreateAPI
 {
+
     [Route("api/")]
     [ApiController]
     public class CreateAPIController : ControllerBase
@@ -56,7 +57,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
             {
                 return StatusCode(500, $"Mapping error: {ex.Message}");
             }
-            catch (Exception ex)
+            catch 
             {
                 return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);
             }

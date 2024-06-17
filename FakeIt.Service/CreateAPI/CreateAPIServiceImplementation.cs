@@ -31,9 +31,8 @@ namespace FakeIt.Service.CreateAPI
             {
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
-            catch (Exception)
+            catch
             {
-
                 throw;
             }
             
