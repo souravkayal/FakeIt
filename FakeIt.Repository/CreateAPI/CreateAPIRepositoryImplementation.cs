@@ -42,7 +42,7 @@ namespace FakeIt.Repository.CreateAPI
                     Message = ex.Message 
                 };
             }
-            catch (Exception)
+            catch
             {
                 return new CreateAPIResponse 
                 { 
