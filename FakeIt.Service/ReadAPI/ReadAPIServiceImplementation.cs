@@ -5,7 +5,6 @@ using FakeIt.Repository.ReadAPI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 
 namespace FakeIt.Service.ReadAPI
 {
