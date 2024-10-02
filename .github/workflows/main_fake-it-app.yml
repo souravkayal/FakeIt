@@ -28,13 +28,13 @@ jobs:
         run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o ${{ github.workspace }}/myapp  # Use GitHub workspace for output
 
       - name: List files in myapp
-        run: ls -R ${{ github.workspace }}/myapp  # Check if files are correctly placed in the 'myapp' directory
+        run: ls -R ${{ github.workspace }}  # Check if files are correctly placed in the 'myapp' directory
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: fake-it-app
-          path: ${{ github.workspace }}/myapp  # Upload the 'myapp' directory
+          path: ${{ github.workspace }}  # Upload the 'myapp' directory
 
   deploy:
     runs-on: ubuntu-latest
@@ -67,4 +67,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/myapp  # Use the correct path for deployment
+          package: ${{ github.workspace }}  # Use the correct path for deployment
