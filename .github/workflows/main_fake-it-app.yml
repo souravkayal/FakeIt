@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - fake-it-app
 
 on:
@@ -25,16 +22,16 @@ jobs:
         run: dotnet restore ./FakeIt.Web.sln  # Specify the relative path to your solution file
 
       - name: Build with dotnet
-        run: dotnet build ./FakeIt.Web.sln --configuration Release  # Specify the relative path to your solution file
+        run: dotnet build ./FakeIt.Web.sln --configuration Release --no-restore  # Specify the relative path to your solution file
 
       - name: dotnet publish
-        run: dotnet publish ./FakeIt.Web.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp  # Specify the relative path to your solution file
+        run: dotnet publish ./FakeIt.Web.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp --verbosity detailed  # Specify the relative path to your solution file
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: fake-it-app
-          path: ${{env.DOTNET_ROOT}}/fake-it-app
+          path: ${{env.DOTNET_ROOT}}/myapp  # Ensure this matches the output path
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,7 +46,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: fake-it-app
+          name: fake-it-app  # Ensure this matches the uploaded artifact name
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -64,4 +61,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/fake-it-app  # Point to the published output directory
+          package: ${{env.DOTNET_ROOT}}/myapp  # Point to the published output directory
