@@ -33,7 +33,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
+          name: fake-it-app
           path: ${{env.DOTNET_ROOT}}/fake-it-app
 
   deploy:
