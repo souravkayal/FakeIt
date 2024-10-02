@@ -19,19 +19,19 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
-        run: dotnet restore ./FakeIt.Web.sln  # Specify the relative path to your solution file
+        run: dotnet restore ./FakeIt.Web/FakeIt.Web.csproj  # Specify the relative path to your project file
 
-      - name: Build with dotnet
-        run: dotnet build ./FakeIt.Web.sln --configuration Release --no-restore  # Specify the relative path to your solution file
+      - name: Build the project
+        run: dotnet build ./FakeIt.Web/FakeIt.Web.csproj --configuration Release --no-restore  # Specify the relative path to your project file
 
-      - name: dotnet publish
-        run: dotnet publish ./FakeIt.Web.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp --verbosity detailed  # Specify the relative path to your solution file
+      - name: Publish the project
+        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o ${{ github.workspace }}/myapp  # Output to a known path
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: fake-it-app
-          path: ${{env.DOTNET_ROOT}}/myapp  # Ensure this matches the output path
+          path: ${{ github.workspace }}/myapp  # Ensure this matches the output path
 
   deploy:
     runs-on: ubuntu-latest
@@ -40,14 +40,14 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write  # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: fake-it-app  # Ensure this matches the uploaded artifact name
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,4 +61,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/myapp  # Point to the published output directory
+          package: './myapp'  # Correct path after downloading the artifact
