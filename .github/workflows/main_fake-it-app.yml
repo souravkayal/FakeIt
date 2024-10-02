@@ -25,7 +25,10 @@ jobs:
         run: dotnet build ./FakeIt.Web/FakeIt.Web.csproj --configuration Release --no-restore  # Specify the relative path to your project file
 
       - name: Publish the project
-        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o myapp  # Output to a known path without using github.workspace
+        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o myapp  # Output to a known path
+
+      - name: List files in myapp
+        run: ls -R myapp  # Check the contents of the myapp directory
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
@@ -48,6 +51,9 @@ jobs:
         with:
           name: fake-it-app  # Ensure this matches the uploaded artifact name
 
+      - name: List downloaded files
+        run: ls -R  # Check the contents of the current directory to confirm that the artifact was downloaded
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,4 +67,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: './myapp'  # Correct path after downloading the artifact; using './' to indicate the current working directory
+          package: './myapp'  # Ensure this matches the downloaded artifact path
