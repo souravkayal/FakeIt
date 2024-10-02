@@ -19,22 +19,22 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
-        run: dotnet restore ./FakeIt.Web/FakeIt.Web.csproj  # Specify the relative path to your project file
+        run: dotnet restore ./FakeIt.Web/FakeIt.Web.csproj  # Relative path to the project file
 
       - name: Build the project
-        run: dotnet build ./FakeIt.Web/FakeIt.Web.csproj --configuration Release --no-restore  # Specify the relative path to your project file
+        run: dotnet build ./FakeIt.Web/FakeIt.Web.csproj --configuration Release --no-restore  # Relative path to the project file
 
-      - name: Publish the project
-        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o ./myapp  # Output to a known path ('./myapp')
+      - name: Publish the project to myapp directory
+        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o ${{ github.workspace }}/myapp  # Use GitHub workspace for output
 
       - name: List files in myapp
-        run: ls -R ./myapp  # Check the contents of the myapp directory
+        run: ls -R ${{ github.workspace }}/myapp  # Check if files are correctly placed in the 'myapp' directory
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: fake-it-app  # Ensure this matches the download artifact name
-          path: ./myapp  # Upload from the 'myapp' directory
+          name: fake-it-app
+          path: ${{ github.workspace }}/myapp  # Upload the 'myapp' directory
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,16 +43,16 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write  # This is required for requesting the JWT
+      id-token: write  # Required for JWT requests
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: fake-it-app  # Ensure this matches the uploaded artifact name
+          name: fake-it-app  # Match the uploaded artifact name
 
       - name: List downloaded files
-        run: ls -R  # Check the contents of the current directory to confirm that the artifact was downloaded
+        run: ls -R ${{ github.workspace }}/myapp  # Verify the 'myapp' directory exists after download
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -67,4 +67,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: './myapp'  # Correct path after downloading the artifact
+          package: ${{ github.workspace }}/myapp  # Use the correct path for deployment
