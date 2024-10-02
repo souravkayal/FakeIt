@@ -64,4 +64,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/myapp  # Point to the published output directory
+          package: ${{env.DOTNET_ROOT}}/fake-it-app  # Point to the published output directory
