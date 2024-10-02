@@ -25,16 +25,16 @@ jobs:
         run: dotnet build ./FakeIt.Web/FakeIt.Web.csproj --configuration Release --no-restore  # Specify the relative path to your project file
 
       - name: Publish the project
-        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o myapp  # Output to a known path
+        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o ./myapp  # Output to a known path ('./myapp')
 
       - name: List files in myapp
-        run: ls -R myapp  # Check the contents of the myapp directory
+        run: ls -R ./myapp  # Check the contents of the myapp directory
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: fake-it-app  # Ensure this matches the download artifact name
-          path: myapp  # Use just the output directory name, as it's relative to the current working directory
+          path: ./myapp  # Upload from the 'myapp' directory
 
   deploy:
     runs-on: ubuntu-latest
@@ -67,4 +67,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: './myapp'  # Ensure this matches the downloaded artifact path
+          package: './myapp'  # Correct path after downloading the artifact
