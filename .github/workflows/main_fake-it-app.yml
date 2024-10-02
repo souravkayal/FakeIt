@@ -21,11 +21,14 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+      - name: Restore dependencies
+        run: dotnet restore ../FakeIt.Web.sln  # Specify the relative path to your solution file
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ../FakeIt.Web.sln --configuration Release  # Specify the relative path to your solution file
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ../FakeIt.Web.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp  # Specify the relative path to your solution file
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -61,5 +64,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: .
-          
+          package: ${{env.DOTNET_ROOT}}/myapp  # Point to the published output directory
