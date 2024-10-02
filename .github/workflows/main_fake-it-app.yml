@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - fake-it-app
 
 on:
@@ -18,23 +21,17 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Restore dependencies
-        run: dotnet restore ./FakeIt.Web/FakeIt.Web.csproj  # Relative path to the project file
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
 
-      - name: Build the project
-        run: dotnet build ./FakeIt.Web/FakeIt.Web.csproj --configuration Release --no-restore  # Relative path to the project file
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-      - name: Publish the project to myapp directory
-        run: dotnet publish ./FakeIt.Web/FakeIt.Web.csproj -c Release -o ${{ github.workspace }}/myapp  # Use GitHub workspace for output
-
-      - name: List files in myapp
-        run: ls -R ${{ github.workspace }}  # Check if files are correctly placed in the 'myapp' directory
-
-      - name: Upload artifact for deployment
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: fake-it-app
-          path: ${{ github.workspace }}  # Upload the 'myapp' directory
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,30 +39,18 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write  # Required for JWT requests
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: fake-it-app  # Match the uploaded artifact name
-
-      - name: List downloaded files
-        run: ls -R ${{ github.workspace }}/myapp  # Verify the 'myapp' directory exists after download
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-
+          name: .net-app
+      
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: ${{ github.workspace }}  # Use the correct path for deployment
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_495896C7DF9C4CADA9D2F298F5709F2F }}
