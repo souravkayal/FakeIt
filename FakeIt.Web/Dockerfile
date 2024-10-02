@@ -8,10 +8,13 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["FakeIt.Web.csproj", "."]
-RUN dotnet restore "./././FakeIt.Web.csproj"
+COPY ["FakeIt.Web/FakeIt.Web.csproj", "FakeIt.Web/"]
+COPY ["FakeIt.Common/FakeIt.Common.csproj", "FakeIt.Common/"]
+COPY ["FakeIt.Service/FakeIt.Service.csproj", "FakeIt.Service/"]
+COPY ["FakeIt.Repository/FakeIt.Repository.csproj", "FakeIt.Repository/"]
+RUN dotnet restore "./FakeIt.Web/./FakeIt.Web.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/FakeIt.Web"
 RUN dotnet build "./FakeIt.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
