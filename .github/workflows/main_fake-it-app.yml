@@ -30,8 +30,8 @@ jobs:
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: fake-it-app
-          path: ${{ github.workspace }}/fakeitapp  # Ensure this matches the output path
+          name: fake-it-app  # Ensure this matches the download artifact name
+          path: ${{ github.workspace }}/myapp  # Correct output path from publish step
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,4 +61,4 @@ jobs:
         with:
           app-name: 'fake-it-app'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/fakeitapp  # Correct path after downloading the artifact
+          package: '${{ github.workspace }}/myapp'  # Correct path after downloading the artifact
