@@ -21,6 +21,7 @@ namespace FakeIt.Service.ReadAPI
         {
             _readAPIRepositoryInterface = readAPIRepositoryInterface;
             _mapper = mapper;
+            _logger = logger;
         }
 
         #region Private methods to generate fake data
@@ -229,7 +230,12 @@ namespace FakeIt.Service.ReadAPI
 
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
-            
+            catch(Exception ex)
+            {
+                _logger.LogInformation($"Service: Exception {ex.Message} {ex.InnerException}");
+
+                throw;
+            }
         }
 
     }
