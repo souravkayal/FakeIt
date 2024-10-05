@@ -13,12 +13,15 @@ namespace FakeIt.Web.Controllers.CreateAPI
     {
         private readonly IMapper _mapper;
         private readonly IReadAPIServiceInterface _readAPIServiceInterface;
+        private readonly ILogger<ReadAPIController> _logger;
 
         public ReadAPIController(IMapper mapper, 
-            IReadAPIServiceInterface readAPIServiceInterface) 
+            IReadAPIServiceInterface readAPIServiceInterface, 
+            ILogger<ReadAPIController> logger) 
         {
             _mapper = mapper;
             _readAPIServiceInterface = readAPIServiceInterface;
+            _logger = logger;
         }
 
 
@@ -28,9 +31,13 @@ namespace FakeIt.Web.Controllers.CreateAPI
             try
             {
                 var endpoint = CommonHelper.GetPartAfterRead($"/{Request?.Path.Value?.TrimStart('/')}");
-                
+
+                _logger.LogInformation($"Controller: Endpoint-{endpoint}");
+
                 if (string.IsNullOrEmpty(endpoint))
                 {
+                    _logger.LogInformation($"Controller: Invalid URM");
+
                     return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
                 }
 
@@ -47,13 +54,19 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     Count = count
                 });
 
+                _logger.LogInformation($"Controller: DTO conversion completed");
+
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
                 if(result.StatusCode != 404 && result.Message != "NoResultFound") 
                 {
+                    _logger.LogInformation($"Controller: Result found in DB");
+
                     return StatusCode(result.StatusCode, 
                         System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response)));
                 }
+
+                _logger.LogInformation($"Controller: Result not found in DB");
 
                 return new ReadAPIResponse 
                 {   
@@ -63,10 +76,14 @@ namespace FakeIt.Web.Controllers.CreateAPI
             }
             catch (AutoMapperMappingException ex)
             {
+                _logger.LogInformation($"Controller: Automappper exception {ex.Message}");
+
                 return new ReadAPIResponse { StatusCode = 500, Message = $"Mapping error: {ex.Message}" };
             }
             catch (Exception ex)
             {
+                _logger.LogInformation($"Controller: Exception {ex.Message}");
+
                 return new ReadAPIResponse { StatusCode = 500, Message = CommonConstants.INTERNAL_SERVER_ERROR };
             }
 
