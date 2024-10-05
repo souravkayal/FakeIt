@@ -2,6 +2,7 @@
 using Bogus;
 using FakeIt.Common.DTOs.ReadAPI;
 using FakeIt.Repository.ReadAPI;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
@@ -10,12 +11,13 @@ namespace FakeIt.Service.ReadAPI
 {
     public class ReadAPIServiceImplementation : IReadAPIServiceInterface
     {
-
         private readonly IReadAPIRepositoryInterface _readAPIRepositoryInterface;
         private readonly IMapper _mapper;
+        private readonly ILogger<ReadAPIRepositoryImplementation> _logger;
 
         public ReadAPIServiceImplementation(IReadAPIRepositoryInterface readAPIRepositoryInterface, 
-            IMapper mapper) 
+            IMapper mapper, 
+            ILogger<ReadAPIRepositoryImplementation> logger) 
         {
             _readAPIRepositoryInterface = readAPIRepositoryInterface;
             _mapper = mapper;
@@ -167,6 +169,8 @@ namespace FakeIt.Service.ReadAPI
                 // Checking 404 is not possible, user may set 404 as response ;)
                 if(response != null && (response.StatusCode != 404 && response.Message != "NoResultFound"))
                 {
+                    _logger.LogInformation($"Service: Result not found. 404 error");
+
                     //If the request is to return the original response
                     if (request.Count == -1)
                     {
@@ -175,6 +179,8 @@ namespace FakeIt.Service.ReadAPI
                         if(token.Type == JTokenType.Array) 
                         {
                             List<JToken> jTokens = JsonConvert.DeserializeObject<List<JToken>>(response.Response.ToString());
+                            
+                            _logger.LogInformation($"Service: Parsing completed for single result packed in JSON");
 
                             return new ReadAPIResponse
                             {
@@ -186,6 +192,8 @@ namespace FakeIt.Service.ReadAPI
                         else
                         {
                             JToken jTokens = JsonConvert.DeserializeObject<JToken>(response.Response.ToString());
+                            
+                            _logger.LogInformation($"Service: Parsing completed for array result packed in JSON");
 
                             return new ReadAPIResponse
                             {
@@ -198,6 +206,8 @@ namespace FakeIt.Service.ReadAPI
                     {
                         //Make fake response for requested number of times
                         List<JToken> multipleObjectResponse = GenerateFakeObjects(response.Response.ToString(), request.Count);
+                        
+                        _logger.LogInformation($"Service: Parsing completed for multiple result");
 
                         return new ReadAPIResponse
                         {   
@@ -208,11 +218,15 @@ namespace FakeIt.Service.ReadAPI
                    
                 }
 
+                _logger.LogInformation($"Service: Response is empty {response.StatusCode} - {response.Message}");
+
                 return new ReadAPIResponse { StatusCode = response.StatusCode , Message = response.Message };
 
             }
             catch (AutoMapperMappingException ex)
             {
+                _logger.LogInformation($"Service: Automapper Exception {ex.Message}");
+
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
             
