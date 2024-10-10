@@ -13,13 +13,15 @@ namespace FakeIt.Web.Controllers.CreateAPI
     {
         private readonly ICreateAPIServiceInterface _createAPIServiceInterface;
         private readonly IMapper _mapper;
-        //TODO: add logger
+        private readonly ILogger<CreateAPIController> _logger;
 
         public CreateAPIController(ICreateAPIServiceInterface createAPIServiceInterface 
-            , IMapper mapper) 
+            , IMapper mapper, 
+            ILogger<CreateAPIController> logger) 
         {
             _createAPIServiceInterface = createAPIServiceInterface;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -60,18 +62,19 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 //TODO: validate response as valid JSON
 
-
                 var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
 
                 var result = await _createAPIServiceInterface.CreateStaticMapping(requestDto);
 
                 if(result.StatusCode != 200)
                 {
+                    _logger.LogInformation($"Controller: Status code is not success");
                     return StatusCode(result.StatusCode , result.Message);
                 }
 
                 if (result == null)
                 {
+                    _logger.LogInformation($"Controller: Result is null from service");
                     return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);
                 }
 
@@ -81,10 +84,12 @@ namespace FakeIt.Web.Controllers.CreateAPI
             }
             catch (AutoMapperMappingException ex)
             {
+                _logger.LogError($"Controller: Auto mapper exception {ex.Message}");
                 return StatusCode(500, $"Mapping error: {ex.Message}");
             }
-            catch 
+            catch(Exception ex) 
             {
+                _logger.LogError($"Controller: Exception {ex.Message}");
                 return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);
             }
             

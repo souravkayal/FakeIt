@@ -222,18 +222,15 @@ namespace FakeIt.Service.ReadAPI
                 _logger.LogInformation($"Service: Response is empty {response.StatusCode} - {response.Message}");
 
                 return new ReadAPIResponse { StatusCode = response.StatusCode , Message = response.Message };
-
             }
             catch (AutoMapperMappingException ex)
             {
-                _logger.LogInformation($"Service: Automapper Exception {ex.Message}");
-
+                _logger.LogError($"Service: Automapper Exception {ex.Message}");
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
             catch(Exception ex)
             {
-                _logger.LogInformation($"Service: Exception {ex.Message} {ex.InnerException}");
-
+                _logger.LogError($"Service: Exception {ex.Message} {ex.InnerException}");
                 throw;
             }
         }
