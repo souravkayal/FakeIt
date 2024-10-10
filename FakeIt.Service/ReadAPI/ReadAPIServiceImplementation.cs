@@ -235,11 +235,13 @@ namespace FakeIt.Service.ReadAPI
             catch (AutoMapperMappingException ex)
             {
                 _logger.LogError($"Service: Automapper Exception {ex.Message}");
+
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
             catch(Exception ex)
             {
                 _logger.LogError($"Service: Exception {ex.Message} {ex.InnerException}");
+
                 throw;
             }
         }
