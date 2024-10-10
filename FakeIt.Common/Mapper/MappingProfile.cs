@@ -9,9 +9,7 @@ namespace FakeIt.Web
         {
             //Mapper for creating static API
             CreateMap<Common.APIModel.CreateAPI.CreateAPIRequest, Common.DTOs.CreateAPI.CreateAPIRequest>();
-           //.ForMember(dest => dest.Response, 
-           //                   opt => opt.MapFrom(new DynamicToStringResolver<Common.APIModel.CreateAPI.CreateAPIRequest>(src => src.Response)));
-
+           
             CreateMap<Common.DTOs.CreateAPI.CreateAPIRequest, Common.Entity.CreateAPI.CreateAPIRequest>();
 
             CreateMap<Common.Entity.CreateAPI.CreateAPIResponse, Common.DTOs.CreateAPI.CreateAPIResponse>();
