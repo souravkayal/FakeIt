@@ -4,6 +4,6 @@ namespace FakeIt.Common.Entity.ReadAPI
 {
     public class ReadAPIResponse : ResponseBase
     {
-        public dynamic Response { get; set; }
+        public object? Response { get; set; }
     }
 }

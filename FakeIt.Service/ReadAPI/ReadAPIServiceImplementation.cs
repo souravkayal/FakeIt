@@ -171,6 +171,16 @@ namespace FakeIt.Service.ReadAPI
                 {
                     _logger.LogInformation($"Service: Result not found. 404 error");
 
+                    //In case of user set null in response. This is valid use-case
+                    if (string.IsNullOrEmpty(Convert.ToString(response.Response)))
+                    {
+                        return new ReadAPIResponse
+                        {
+                            StatusCode = response.StatusCode,
+                            Response = null
+                        };
+                    }
+
                     //If the request is to return the original response
                     if (request.Count == -1)
                     {

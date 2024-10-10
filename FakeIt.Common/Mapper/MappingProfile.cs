@@ -8,9 +8,9 @@ namespace FakeIt.Web
         public MappingProfile() 
         {
             //Mapper for creating static API
-            CreateMap<Common.APIModel.CreateAPI.CreateAPIRequest, Common.DTOs.CreateAPI.CreateAPIRequest>()
-           .ForMember(dest => dest.Response, 
-                              opt => opt.MapFrom(new DynamicToStringResolver<Common.APIModel.CreateAPI.CreateAPIRequest>(src => src.Response)));
+            CreateMap<Common.APIModel.CreateAPI.CreateAPIRequest, Common.DTOs.CreateAPI.CreateAPIRequest>();
+           //.ForMember(dest => dest.Response, 
+           //                   opt => opt.MapFrom(new DynamicToStringResolver<Common.APIModel.CreateAPI.CreateAPIRequest>(src => src.Response)));
 
             CreateMap<Common.DTOs.CreateAPI.CreateAPIRequest, Common.Entity.CreateAPI.CreateAPIRequest>();
 
