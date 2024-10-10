@@ -27,5 +27,16 @@
             }
             return url; // Return the original url if there's no slash
         }
+
+        public static bool IsValidHttpMethod(string method)
+        {
+            return method == HttpMethod.Get.Method ||
+                   method == HttpMethod.Post.Method ||
+                   method == HttpMethod.Put.Method ||
+                   method == HttpMethod.Delete.Method ||
+                   method == HttpMethod.Patch.Method ||
+                   method == HttpMethod.Head.Method ||
+                   method == HttpMethod.Options.Method;
+        }
     }
 }
