@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using FakeIt.Common.APIModel.ReadAPI;
 using FakeIt.Common.Common;
 using FakeIt.Service.ReadAPI;
@@ -58,12 +58,23 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
+                //If user set null in response.
+                if(result.StatusCode == 200 && result.Response == null)
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = result.StatusCode,
+                        Content = null,
+                        ContentType = "application/json"
+                    };
+                }
+
                 if(result.StatusCode != 404 && result.Message != "NoResultFound") 
                 {
                     _logger.LogInformation($"Controller: Result found in DB");
 
                     return StatusCode(result.StatusCode, 
-                        System.Text.Json.JsonSerializer.Deserialize<dynamic>(JsonConvert.SerializeObject(result.Response)));
+                        System.Text.Json.JsonSerializer.Deserialize<object>(JsonConvert.SerializeObject(result.Response)));
                 }
 
                 _logger.LogInformation($"Controller: Result not found in DB");
@@ -73,6 +84,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     StatusCode = result.StatusCode, 
                     Message = result.StatusCode == 404 ? "No Result Found." : result.Message 
                 };
+
             }
             catch (AutoMapperMappingException ex)
             {

@@ -5,6 +5,6 @@ namespace FakeIt.Common.DTOs.ReadAPI
 {
     public class ReadAPIResponse : ResponseBase
     {
-        public dynamic Response { get; set; }
+        public object? Response { get; set; }
     }
 }

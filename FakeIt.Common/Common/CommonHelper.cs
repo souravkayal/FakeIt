@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace FakeIt.Common.Common
 {
@@ -43,6 +45,9 @@ namespace FakeIt.Common.Common
 
         public static bool IsValidJSON(string json)
         {
+            if (json == null)
+                return true;
+
             try
             {
                 var jsonData = JsonConvert.DeserializeObject(json);
@@ -52,6 +57,31 @@ namespace FakeIt.Common.Common
             {
                 return false;
             }
+        }
+
+        public static bool IsValidHttpStatusCode(int statusCode)
+        {
+            return Enum.IsDefined(typeof(HttpStatusCode), statusCode);
+        }
+
+        public static bool IsValidURI(string uri)
+        {
+            string pattern = @"^[a-zA-Z0-9/]+$";
+            
+            return Regex.IsMatch(uri, pattern) ? true : false;
+        }
+
+        public static string RemoveFirstSlashFromURI(string input)
+        {
+            // Check if the string starts with "/"
+            if (!string.IsNullOrEmpty(input) && input.StartsWith("/"))
+            {
+                // Remove the first character ("/")
+                return input.Substring(1);
+            }
+
+            // If the string does not start with "/", return it unchanged
+            return input;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Please provide valid request setting");
                 }
 
-                if ( createAPIRequest.StatusCode == 0 ) 
+                if (!CommonHelper.IsValidHttpStatusCode(createAPIRequest.StatusCode)) 
                 {
                     return StatusCode((int) HttpStatusCode.BadRequest, "Please provide valid HTTP status code in request.");
                 }
@@ -55,15 +55,23 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Please provide valid HTTP method name in request.");
                 }
 
-                if(createAPIRequest.Response == null)
-                {
-                    return StatusCode((int)HttpStatusCode.BadRequest, "Please provide response message.");
-                }
-
-                if (!CommonHelper.IsValidJSON(createAPIRequest.Response))
+                if (!CommonHelper.IsValidJSON(Convert.ToString(createAPIRequest.Response)))
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, "Invalid response JSON in request. Please use valid JSON in response.");
                 }
+
+                if(String.IsNullOrEmpty(createAPIRequest.URL))
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, "Plsease set url in request payload.");
+                }
+
+                if(!CommonHelper.IsValidURI(createAPIRequest.URL))
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, "Invalid resource identifier (URL). Only alphanumeric or / is allowed");
+                }
+
+                //take out first slash from url, if present
+                createAPIRequest.URL = CommonHelper.RemoveFirstSlashFromURI(createAPIRequest.URL);
 
                 var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
 
