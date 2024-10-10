@@ -156,7 +156,6 @@ namespace FakeIt.Service.ReadAPI
             return fakeArray;
         }
 
-
         #endregion
 
         public async Task<ReadAPIResponse> ReturnAPIResponse(ReadAPIRequest request)
