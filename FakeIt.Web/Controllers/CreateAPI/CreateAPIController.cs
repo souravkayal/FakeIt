@@ -40,7 +40,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Please provide valid request setting");
                 }
 
-                if ( createAPIRequest.StatusCode == 0 ) 
+                if (!CommonHelper.IsValidHttpStatusCode(createAPIRequest.StatusCode)) 
                 {
                     return StatusCode((int) HttpStatusCode.BadRequest, "Please provide valid HTTP status code in request.");
                 }

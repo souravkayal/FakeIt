@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Net;
 
 namespace FakeIt.Common.Common
 {
@@ -52,6 +53,11 @@ namespace FakeIt.Common.Common
             {
                 return false;
             }
+        }
+
+        public static bool IsValidHttpStatusCode(int statusCode)
+        {
+            return Enum.IsDefined(typeof(HttpStatusCode), statusCode);
         }
     }
 }
