@@ -15,8 +15,8 @@ namespace FakeIt.Web.Controllers.CreateAPI
         private readonly IMapper _mapper;
         private readonly ILogger<CreateAPIController> _logger;
 
-        public CreateAPIController(ICreateAPIServiceInterface createAPIServiceInterface 
-            , IMapper mapper, 
+        public CreateAPIController(ICreateAPIServiceInterface createAPIServiceInterface, 
+            IMapper mapper, 
             ILogger<CreateAPIController> logger) 
         {
             _createAPIServiceInterface = createAPIServiceInterface;
@@ -60,7 +60,10 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Please provide response message.");
                 }
 
-                //TODO: validate response as valid JSON
+                if (!CommonHelper.IsValidJSON(createAPIRequest.Response))
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, "Invalid response JSON in request. Please use valid JSON in response.");
+                }
 
                 var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
 
@@ -92,7 +95,6 @@ namespace FakeIt.Web.Controllers.CreateAPI
                 _logger.LogError($"Controller: Exception {ex.Message}");
                 return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);
             }
-            
         }
     }
 }

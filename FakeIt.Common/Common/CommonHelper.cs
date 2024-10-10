@@ -1,4 +1,6 @@
-﻿namespace FakeIt.Common.Common
+﻿using Newtonsoft.Json;
+
+namespace FakeIt.Common.Common
 {
     public static class CommonHelper
     {
@@ -37,6 +39,19 @@
                    method == HttpMethod.Patch.Method ||
                    method == HttpMethod.Head.Method ||
                    method == HttpMethod.Options.Method;
+        }
+
+        public static bool IsValidJSON(string json)
+        {
+            try
+            {
+                var jsonData = JsonConvert.DeserializeObject(json);
+                return true;
+            }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
         }
     }
 }
