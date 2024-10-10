@@ -1,12 +1,20 @@
-﻿namespace FakeIt.Web.Controllers.CreateAPI
-{
+﻿using Microsoft.AspNetCore.Mvc;
 
-    public class HealthController
+namespace FakeIt.Web.Controllers.CreateAPI
+{
+    public class HealthController : ControllerBase
     {
         public HealthController() 
         {
+
         }
 
+        //TODO: modify to implement actual health check logic
+        [Route("/health")]
+        public IActionResult Index() 
+        {
+            return Ok();
+        }
 
     }
 }
