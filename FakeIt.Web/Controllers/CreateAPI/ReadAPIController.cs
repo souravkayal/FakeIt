@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace FakeIt.Web.Controllers.CreateAPI
 {
     [ApiController]
-    [Route("/read/{*url}")]
+    [Route("/{project}/{*url}")]
     public class ReadAPIController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -26,7 +26,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
 
         [AcceptVerbs("GET", "POST", "PUT", "DELETE", "PATCH")]
-        public async Task<dynamic> Read([FromQuery] int count = -1)
+        public async Task<dynamic> Read([FromQuery] int giveme = -1)
         {
             try
             {
@@ -38,20 +38,21 @@ namespace FakeIt.Web.Controllers.CreateAPI
                 {
                     _logger.LogInformation($"Controller: Invalid URM");
 
-                    return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL." };
+                    return new ReadAPIResponse { StatusCode = 400, Message = "Invalid URL error : Pls provide full URL path." };
                 }
 
                 // Let's allow only 100 mock results ;)
-                if (count < -1 || count == 0 || count > 100)
+                if (giveme < -1 || giveme == 0 || giveme > 100)
                 {
                     return new ReadAPIResponse { StatusCode = 400, Message = "Invalid count. Count must be in range of 1 to 100. Ignore count to retuen the origianl document" };
                 }
 
                 var readRequestDto = _mapper.Map<Common.DTOs.ReadAPI.ReadAPIRequest>(new ReadAPIRequest
                 {
+                    ProjectName = CommonHelper.GetProjectNameFromURI($"/{Request?.Path.Value?.TrimStart('/')}"),
                     HttpMethod = Request?.Method,
                     URL = endpoint,
-                    Count = count
+                    Count = giveme
                 });
 
                 _logger.LogInformation($"Controller: DTO conversion completed");

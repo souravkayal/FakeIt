@@ -11,9 +11,9 @@ namespace FakeIt.Repository.ReadAPI
     {
         private readonly Container _container;
         private readonly ILogger<ReadAPIRepositoryImplementation> _logger;
-        string connectionString;
 
-        public ReadAPIRepositoryImplementation(CosmosConnect cosmosConnect , ILogger<ReadAPIRepositoryImplementation> logger) 
+        public ReadAPIRepositoryImplementation(CosmosConnect cosmosConnect , 
+            ILogger<ReadAPIRepositoryImplementation> logger) 
         {
             _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER, CosmosConstant.API_MASTER_PARTITION_KEY);
             _logger = logger;
@@ -23,13 +23,14 @@ namespace FakeIt.Repository.ReadAPI
         {
             try
             {
-                var sqlQueryText = "SELECT c.status_code, c.response FROM c WHERE c.http_methode = @httpMethod AND c.url = @url";
+                var sqlQueryText = "SELECT c.status_code, c.response FROM c WHERE c.http_methode = @httpMethod AND c.url = @url AND c.project_name=@projectName";
 
                 var queryDefinition = new QueryDefinition(sqlQueryText)
                     .WithParameter("@httpMethod", request.HttpMethod)
-                    .WithParameter("@url", request.URL);
-                
-                _logger.LogInformation($"Query- {queryDefinition.QueryText} - {request.HttpMethod} - {request.URL}");
+                    .WithParameter("@url", request.URL)
+                    .WithParameter("@projectName", request.ProjectName);
+
+                _logger.LogInformation($"Query- {queryDefinition.QueryText} - {request.HttpMethod} - {request.URL} - {request.ProjectName}");
 
                 var iterator = _container.GetItemQueryIterator<dynamic>(queryDefinition);
                 
