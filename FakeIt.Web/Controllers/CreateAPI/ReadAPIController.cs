@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace FakeIt.Web.Controllers.CreateAPI
 {
     [ApiController]
-    [Route("/read/{*url}")]
+    [Route("/{project}/{*url}")]
     public class ReadAPIController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -49,6 +49,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 var readRequestDto = _mapper.Map<Common.DTOs.ReadAPI.ReadAPIRequest>(new ReadAPIRequest
                 {
+                    ProjectName = CommonHelper.GetProjectNameFromURI($"/{Request?.Path.Value?.TrimStart('/')}"),
                     HttpMethod = Request?.Method,
                     URL = endpoint,
                     Count = giveme

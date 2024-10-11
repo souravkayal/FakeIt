@@ -8,18 +8,29 @@ namespace FakeIt.Common.Common
     {
         public static string GetPartAfterRead(string input)
         {
-            string keyword = "/read";
-            int index = input.IndexOf(keyword);
+            int firstSlashIndex = input.IndexOf('/');
 
-            if (index == -1)
+            int secondSlashIndex = input.IndexOf('/', firstSlashIndex + 1);
+
+            if (secondSlashIndex != -1)
             {
-                return string.Empty;
+                return RemoveFirstSlash(input.Substring(secondSlashIndex));
             }
 
-            var result = input.Substring(index + keyword.Length);
-            return RemoveFirstSlash(Uri.UnescapeDataString(result));
+            return string.Empty;
+        }
 
-            //return RemoveFirstSlash(Uri.UnescapeDataString(result));
+        public static string GetProjectNameFromURI(string uri) 
+        {
+            int firstSlashIndex = uri.IndexOf('/');
+
+            int secondSlashIndex = uri.IndexOf('/', firstSlashIndex + 1);
+
+            if (firstSlashIndex != -1 && secondSlashIndex != -1)
+            {
+                return uri.Substring(firstSlashIndex + 1, secondSlashIndex - firstSlashIndex - 1);
+            }
+            return string.Empty;    
         }
 
         public static string RemoveFirstSlash(string url)
