@@ -14,7 +14,7 @@ namespace FakeIt.Repository.CreateAPI
         public CreateAPIRepositoryImplementation(CosmosConnect cosmosConnect, 
             ILogger<CreateAPIRepositoryImplementation> logger) 
         {
-            _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER ,CosmosConstant.API_MASTER_PARTITION_KEY);
+            _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER ,CosmosConstant.API_MASTER_PARTITION_KEY).Result;
             _logger = logger;
         }
 
@@ -22,6 +22,7 @@ namespace FakeIt.Repository.CreateAPI
         {
             try
             {
+
                 await _container.CreateItemAsync(request);
 
                 _logger.LogInformation($"Repository: document created successfully.");
