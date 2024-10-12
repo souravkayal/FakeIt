@@ -15,7 +15,7 @@ namespace FakeIt.Repository.ReadAPI
         public ReadAPIRepositoryImplementation(CosmosConnect cosmosConnect , 
             ILogger<ReadAPIRepositoryImplementation> logger) 
         {
-            _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER, CosmosConstant.API_MASTER_PARTITION_KEY);
+            _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER, CosmosConstant.API_MASTER_PARTITION_KEY).Result;
             _logger = logger;
         }
 

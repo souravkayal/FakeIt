@@ -70,7 +70,6 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Invalid resource identifier (URL). Only alphanumeric or / is allowed");
                 }
 
-                //take out first slash from url, if present
                 createAPIRequest.URL = CommonHelper.RemoveFirstSlashFromURI(createAPIRequest.URL);
 
                 var requestDto = _mapper.Map<Common.DTOs.CreateAPI.CreateAPIRequest>(createAPIRequest);
