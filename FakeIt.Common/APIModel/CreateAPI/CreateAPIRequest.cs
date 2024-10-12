@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace FakeIt.Common.APIModel.CreateAPI
 {
@@ -8,18 +6,21 @@ namespace FakeIt.Common.APIModel.CreateAPI
     {
         
         [JsonPropertyName("project-name")]
-        public string ProjectName { get; set; } = string.Empty;
+        public string ProjectName { get; set; }
 
+        
         [JsonPropertyName("url")]
-        public string URL { get; set; } = string.Empty;
+        public string URL { get; set; }
+
 
         [JsonPropertyName("http-method")]
-        public string HttpMethod { get; set; } = string.Empty;
+        public string HttpMethod { get; set; }
 
+        
         [JsonPropertyName("response")]
         public object? Response { get; set; }
 
-        [Required]
+        
         [JsonPropertyName("status-code")]
         public int StatusCode { get; set; }
 

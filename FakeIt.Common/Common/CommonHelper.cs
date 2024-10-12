@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -94,5 +96,6 @@ namespace FakeIt.Common.Common
             // If the string does not start with "/", return it unchanged
             return input;
         }
+
     }
 }
