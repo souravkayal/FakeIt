@@ -4,9 +4,7 @@ using FakeIt.Repository.ReadAPI;
 using FakeIt.Service.CreateAPI;
 using FakeIt.Service.ReadAPI;
 using FakeIt.Web;
-using FakeIt.Web.Filters;
 using Microsoft.Azure.Cosmos;
-using static FakeIt.Common.Common.CommonHelper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +17,7 @@ builder.Services.AddTransient<IReadAPIRepositoryInterface, ReadAPIRepositoryImpl
 
 
 // Application settings
-builder.Services.AddControllers(options => 
+builder.Services.AddControllers(options =>
 {
     //options.Filters.Add<CustomValidationFilter>();
 });

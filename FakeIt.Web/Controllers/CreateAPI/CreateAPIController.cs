@@ -15,9 +15,9 @@ namespace FakeIt.Web.Controllers.CreateAPI
         private readonly IMapper _mapper;
         private readonly ILogger<CreateAPIController> _logger;
 
-        public CreateAPIController(ICreateAPIServiceInterface createAPIServiceInterface, 
-            IMapper mapper, 
-            ILogger<CreateAPIController> logger) 
+        public CreateAPIController(ICreateAPIServiceInterface createAPIServiceInterface,
+            IMapper mapper,
+            ILogger<CreateAPIController> logger)
         {
             _createAPIServiceInterface = createAPIServiceInterface;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
         [HttpPost("create")]
         public async Task<ActionResult<Common.APIModel.CreateAPI.CreateAPIResponse>> CreateStaticAPIMapping([FromBody] Common.APIModel.CreateAPI.CreateAPIRequest createAPIRequest)
         {
-            
+
             try
             {
                 if (createAPIRequest == null)
@@ -40,9 +40,9 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Please provide valid request setting");
                 }
 
-                if (!CommonHelper.IsValidHttpStatusCode(createAPIRequest.StatusCode)) 
+                if (!CommonHelper.IsValidHttpStatusCode(createAPIRequest.StatusCode))
                 {
-                    return StatusCode((int) HttpStatusCode.BadRequest, "Please provide valid HTTP status code in request.");
+                    return StatusCode((int)HttpStatusCode.BadRequest, "Please provide valid HTTP status code in request.");
                 }
 
                 if (String.IsNullOrEmpty(createAPIRequest.ProjectName))
@@ -60,12 +60,12 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     return StatusCode((int)HttpStatusCode.BadRequest, "Invalid response JSON in request. Please use valid JSON in response.");
                 }
 
-                if(String.IsNullOrEmpty(createAPIRequest.URL))
+                if (String.IsNullOrEmpty(createAPIRequest.URL))
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, "Plsease set url in request payload.");
                 }
 
-                if(!CommonHelper.IsValidURI(createAPIRequest.URL))
+                if (!CommonHelper.IsValidURI(createAPIRequest.URL))
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, "Invalid resource identifier (URL). Only alphanumeric or / is allowed");
                 }
@@ -76,10 +76,10 @@ namespace FakeIt.Web.Controllers.CreateAPI
 
                 var result = await _createAPIServiceInterface.CreateStaticMapping(requestDto);
 
-                if(result.StatusCode != 200)
+                if (result.StatusCode != 200)
                 {
                     _logger.LogInformation($"Controller: Status code is not success");
-                    return StatusCode(result.StatusCode , result.Message);
+                    return StatusCode(result.StatusCode, result.Message);
                 }
 
                 if (result == null)
@@ -97,7 +97,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
                 _logger.LogError($"Controller: Auto mapper exception {ex.Message}");
                 return StatusCode(500, $"Mapping error: {ex.Message}");
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError($"Controller: Exception {ex.Message}");
                 return StatusCode(500, CommonConstants.INTERNAL_SERVER_ERROR);

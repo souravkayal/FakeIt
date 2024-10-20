@@ -1,5 +1,4 @@
 ﻿using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Documents;
 using System.Collections.ObjectModel;
 
 namespace FakeIt.Repository.CosmosConnector
@@ -21,9 +20,9 @@ namespace FakeIt.Repository.CosmosConnector
             var databaseResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(_databaseId);
 
             // Define partition key paths for hierarchical partition keys (e.g., /project_name, /url)
-            PartitionKeyDefinition partitionKeyDefinition = new PartitionKeyDefinition
+            ContainerProperties partitionKeyDefinition = new ContainerProperties
             {
-                Paths = new Collection<string>(new string[] { "/project_name", "/url" }) // Set multiple partition key paths
+                PartitionKeyPaths = new Collection<string>(new string[] { "/project_name", "/url" }) // Set multiple partition key paths
             };
 
             // Create container properties and set the PartitionKeyDefinition

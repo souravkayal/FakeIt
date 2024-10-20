@@ -15,9 +15,9 @@ namespace FakeIt.Service.ReadAPI
         private readonly IMapper _mapper;
         private readonly ILogger<ReadAPIRepositoryImplementation> _logger;
 
-        public ReadAPIServiceImplementation(IReadAPIRepositoryInterface readAPIRepositoryInterface, 
-            IMapper mapper, 
-            ILogger<ReadAPIRepositoryImplementation> logger) 
+        public ReadAPIServiceImplementation(IReadAPIRepositoryInterface readAPIRepositoryInterface,
+            IMapper mapper,
+            ILogger<ReadAPIRepositoryImplementation> logger)
         {
             _readAPIRepositoryInterface = readAPIRepositoryInterface;
             _mapper = mapper;
@@ -62,7 +62,7 @@ namespace FakeIt.Service.ReadAPI
             });
 
             return fakeObjectsBag.ToList();
-            
+
         }
 
         private static JObject GenerateFakeObject(JObject sampleObject, Faker faker)
@@ -167,7 +167,7 @@ namespace FakeIt.Service.ReadAPI
                 var response = await _readAPIRepositoryInterface.ReturnAPIResponse(requestEnt);
 
                 // Checking 404 is not possible, user may set 404 as response ;)
-                if(response != null && (response.StatusCode != 404 && response.Message != "NoResultFound"))
+                if (response != null && (response.StatusCode != 404 && response.Message != "NoResultFound"))
                 {
                     _logger.LogInformation($"Service: Result not found. 404 error");
 
@@ -186,10 +186,10 @@ namespace FakeIt.Service.ReadAPI
                     {
                         JToken token = JToken.Parse(response.Response.ToString());
 
-                        if(token.Type == JTokenType.Array) 
+                        if (token.Type == JTokenType.Array)
                         {
                             List<JToken> jTokens = JsonConvert.DeserializeObject<List<JToken>>(response.Response.ToString());
-                            
+
                             _logger.LogInformation($"Service: Parsing completed for single result packed in JSON");
 
                             return new ReadAPIResponse
@@ -202,7 +202,7 @@ namespace FakeIt.Service.ReadAPI
                         else
                         {
                             JToken jTokens = JsonConvert.DeserializeObject<JToken>(response.Response.ToString());
-                            
+
                             _logger.LogInformation($"Service: Parsing completed for array result packed in JSON");
 
                             return new ReadAPIResponse
@@ -216,21 +216,21 @@ namespace FakeIt.Service.ReadAPI
                     {
                         //Make fake response for requested number of times
                         List<JToken> multipleObjectResponse = GenerateFakeObjects(response.Response.ToString(), request.Count);
-                        
+
                         _logger.LogInformation($"Service: Parsing completed for multiple result");
 
                         return new ReadAPIResponse
-                        {   
+                        {
                             StatusCode = response.StatusCode,
                             Response = multipleObjectResponse.Select(jToken => jToken.ToObject<dynamic>()).ToList()
                         };
                     }
-                   
+
                 }
 
                 _logger.LogInformation($"Service: Response is empty {response.StatusCode} - {response.Message}");
 
-                return new ReadAPIResponse { StatusCode = response.StatusCode , Message = response.Message };
+                return new ReadAPIResponse { StatusCode = response.StatusCode, Message = response.Message };
             }
             catch (AutoMapperMappingException ex)
             {
@@ -238,7 +238,7 @@ namespace FakeIt.Service.ReadAPI
 
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError($"Service: Exception {ex.Message} {ex.InnerException}");
 

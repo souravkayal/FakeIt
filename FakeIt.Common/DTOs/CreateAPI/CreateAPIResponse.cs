@@ -4,6 +4,6 @@ namespace FakeIt.Common.DTOs.CreateAPI
 {
     public class CreateAPIResponse : ResponseBase
     {
-        
+
     }
 }

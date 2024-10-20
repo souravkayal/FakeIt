@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -22,7 +20,7 @@ namespace FakeIt.Common.Common
             return string.Empty;
         }
 
-        public static string GetProjectNameFromURI(string uri) 
+        public static string GetProjectNameFromURI(string uri)
         {
             int firstSlashIndex = uri.IndexOf('/');
 
@@ -32,7 +30,7 @@ namespace FakeIt.Common.Common
             {
                 return uri.Substring(firstSlashIndex + 1, secondSlashIndex - firstSlashIndex - 1);
             }
-            return string.Empty;    
+            return string.Empty;
         }
 
         public static string RemoveFirstSlash(string url)
@@ -80,7 +78,7 @@ namespace FakeIt.Common.Common
         public static bool IsValidURI(string uri)
         {
             string pattern = @"^[a-zA-Z0-9/]+$";
-            
+
             return Regex.IsMatch(uri, pattern) ? true : false;
         }
 

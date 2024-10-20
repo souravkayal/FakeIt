@@ -13,8 +13,8 @@ namespace FakeIt.Service.CreateAPI
 
         public CreateAPIServiceImplementation(
             ICreateAPIRepositoryInterface createAPIRepositoryInterface,
-            IMapper mapper, 
-            ILogger<CreateAPIServiceImplementation> logger) 
+            IMapper mapper,
+            ILogger<CreateAPIServiceImplementation> logger)
         {
             _createAPIRepositoryInterface = createAPIRepositoryInterface;
             _mapper = mapper;
@@ -28,7 +28,7 @@ namespace FakeIt.Service.CreateAPI
                 var requestEntity = _mapper.Map<FakeIt.Common.Entity.CreateAPI.CreateAPIRequest>(request);
 
                 var result = await _createAPIRepositoryInterface.CreateStaticMapping(requestEntity);
-                
+
                 _logger.LogError($"Service: create completed");
 
                 return _mapper.Map<CreateAPIResponse>(result);
@@ -38,12 +38,12 @@ namespace FakeIt.Service.CreateAPI
                 _logger.LogError($"Service: Exception in auto mapping {ex.Message}");
                 throw new Exception("Mapping error occurred while creating static mapping.", ex);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError($"Service: Exception in service {ex.Message}");
                 throw;
             }
-            
+
         }
     }
 }

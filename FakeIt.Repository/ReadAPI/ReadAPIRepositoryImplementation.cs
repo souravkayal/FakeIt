@@ -3,7 +3,6 @@ using FakeIt.Common.Entity.ReadAPI;
 using FakeIt.Repository.CosmosConnector;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace FakeIt.Repository.ReadAPI
 {
@@ -12,8 +11,8 @@ namespace FakeIt.Repository.ReadAPI
         private readonly Container _container;
         private readonly ILogger<ReadAPIRepositoryImplementation> _logger;
 
-        public ReadAPIRepositoryImplementation(CosmosConnect cosmosConnect , 
-            ILogger<ReadAPIRepositoryImplementation> logger) 
+        public ReadAPIRepositoryImplementation(CosmosConnect cosmosConnect,
+            ILogger<ReadAPIRepositoryImplementation> logger)
         {
             _container = cosmosConnect.GetContainer(CosmosConstant.API_MASTER, CosmosConstant.API_MASTER_PARTITION_KEY).Result;
             _logger = logger;
@@ -33,7 +32,7 @@ namespace FakeIt.Repository.ReadAPI
                 _logger.LogInformation($"Query- {queryDefinition.QueryText} - {request.HttpMethod} - {request.URL} - {request.ProjectName}");
 
                 var iterator = _container.GetItemQueryIterator<dynamic>(queryDefinition);
-                
+
                 if (iterator.HasMoreResults)
                 {
                     _logger.LogInformation($"Repository: Result found in db");
@@ -69,7 +68,7 @@ namespace FakeIt.Repository.ReadAPI
 
                 return new ReadAPIResponse
                 {
-                    StatusCode = (int) ex.StatusCode,
+                    StatusCode = (int)ex.StatusCode,
                     Message = ex.Message
                 };
             }
