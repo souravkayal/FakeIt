@@ -1,4 +1,4 @@
-﻿ using AutoMapper;
+﻿using AutoMapper;
 using FakeIt.Common.APIModel.ReadAPI;
 using FakeIt.Common.Common;
 using FakeIt.Service.ReadAPI;
@@ -15,9 +15,9 @@ namespace FakeIt.Web.Controllers.CreateAPI
         private readonly IReadAPIServiceInterface _readAPIServiceInterface;
         private readonly ILogger<ReadAPIController> _logger;
 
-        public ReadAPIController(IMapper mapper, 
-            IReadAPIServiceInterface readAPIServiceInterface, 
-            ILogger<ReadAPIController> logger) 
+        public ReadAPIController(IMapper mapper,
+            IReadAPIServiceInterface readAPIServiceInterface,
+            ILogger<ReadAPIController> logger)
         {
             _mapper = mapper;
             _readAPIServiceInterface = readAPIServiceInterface;
@@ -60,7 +60,7 @@ namespace FakeIt.Web.Controllers.CreateAPI
                 var result = await _readAPIServiceInterface.ReturnAPIResponse(readRequestDto);
 
                 //If user set null in response.
-                if(result.StatusCode == 200 && result.Response == null)
+                if (result.StatusCode == 200 && result.Response == null)
                 {
                     return new ContentResult
                     {
@@ -70,20 +70,20 @@ namespace FakeIt.Web.Controllers.CreateAPI
                     };
                 }
 
-                if(result.StatusCode != 404 && result.Message != "NoResultFound") 
+                if (result.StatusCode != 404 && result.Message != "NoResultFound")
                 {
                     _logger.LogInformation($"Controller: Result found in DB");
 
-                    return StatusCode(result.StatusCode, 
+                    return StatusCode(result.StatusCode,
                         System.Text.Json.JsonSerializer.Deserialize<object>(JsonConvert.SerializeObject(result.Response)));
                 }
 
                 _logger.LogInformation($"Controller: Result not found in DB");
 
-                return new ReadAPIResponse 
-                {   
-                    StatusCode = result.StatusCode, 
-                    Message = result.StatusCode == 404 ? "No Result Found." : result.Message 
+                return new ReadAPIResponse
+                {
+                    StatusCode = result.StatusCode,
+                    Message = result.StatusCode == 404 ? "No Result Found." : result.Message
                 };
 
             }

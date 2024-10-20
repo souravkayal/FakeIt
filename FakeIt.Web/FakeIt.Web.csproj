@@ -20,4 +20,8 @@
     <ProjectReference Include="..\FakeIt.Service\FakeIt.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
 </Project>
